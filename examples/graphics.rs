@@ -25,8 +25,7 @@ use embedded_graphics::{
     geometry::Point,
     pixelcolor::Rgb565,
     prelude::*,
-    primitives::{Circle, Rectangle, Triangle},
-    style::PrimitiveStyleBuilder,
+    primitives::{Circle, Rectangle, Triangle, PrimitiveStyleBuilder},
 };
 use panic_semihosting as _;
 use ssd1331::{DisplayRotation::Rotate0, Ssd1331};
@@ -95,7 +94,7 @@ fn main() -> ! {
     .draw(&mut disp)
     .unwrap();
 
-    Rectangle::new(Point::new(36, 16), Point::new(36 + 16, 16 + 16))
+    Rectangle::new(Point::new(36, 16), Size::new(36 + 16, 16 + 16))
         .into_styled(
             PrimitiveStyleBuilder::new()
                 .stroke_color(Rgb565::GREEN)

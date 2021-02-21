@@ -8,7 +8,7 @@ keywords = ["no-std", "ssd1331", "oled", "embedded", "embedded-hal-driver"]
 license = "MIT OR Apache-2.0"
 name = "ssd1331"
 readme = "README.md"
-repository = "https://github.com/jamwaffles/ssd1331"
+repository = "https://github.com/SKTT1Ryze/ssd1331"
 version = "0.2.2"
 edition = "2018"
 
@@ -20,10 +20,10 @@ circle-ci = { repository = "jamwaffles/ssd1331", branch = "master" }
 
 [dependencies]
 embedded-hal = "0.2.3"
-
-[dependencies.embedded-graphics]
-optional = true
-version = "0.6.0"
+embedded-graphics = { git = "https://github.com/SKTT1Ryze/embedded-graphics.git", branch = "sktt1ryze", optional = true}
+# [dependencies.embedded-graphics]
+# optional = true
+# version = "0.6.0"
 
 [dev-dependencies]
 cortex-m = "0.6.1"
@@ -31,8 +31,8 @@ cortex-m-rt = "0.6.11"
 panic-semihosting = "0.5.3"
 
 [dev-dependencies.tinybmp]
-version = "0.2.2"
-features = [ "graphics" ]
+git = "https://github.com/SKTT1Ryze/tinybmp.git"
+branch = "sktt1ryze"
 
 [dev-dependencies.stm32f1xx-hal]
 version = "0.5.2"

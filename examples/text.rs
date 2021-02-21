@@ -22,13 +22,12 @@
 
 use cortex_m_rt::{entry, exception, ExceptionFrame};
 use embedded_graphics::{
-    egtext,
-    fonts::{Font6x8, Text},
+    mono_font::ascii::{Font6x9},
+    text::Text,
     geometry::Point,
     pixelcolor::Rgb565,
     prelude::*,
-    style::TextStyleBuilder,
-    text_style,
+    mono_font::MonoTextStyleBuilder,
 };
 use panic_semihosting as _;
 use ssd1331::{DisplayRotation::Rotate0, Ssd1331};
@@ -88,7 +87,8 @@ fn main() -> ! {
 
     Text::new("Hello world!", Point::zero())
         .into_styled(
-            TextStyleBuilder::new(Font6x8)
+            MonoTextStyleBuilder::new()
+                .font(Font6x9)
                 .text_color(Rgb565::WHITE)
                 .build(),
         )
@@ -96,23 +96,9 @@ fn main() -> ! {
         .unwrap();
 
     Text::new("Hello Rust!", Point::new(0, 16))
-        .into_styled(TextStyleBuilder::new(Font6x8).text_color(rust).build())
+        .into_styled(MonoTextStyleBuilder::new().font(Font6x9).text_color(rust).build())
         .draw(&mut disp)
         .unwrap();
-
-    // Macros can also be used
-    egtext!(
-        text = "Hello macros!",
-        top_left = (0, 0),
-        style = text_style!(
-            font = Font6x8,
-            text_color = Rgb565::RED,
-            background_color = Rgb565::GREEN
-        )
-    )
-    .translate(Point::new(0, 24))
-    .draw(&mut disp)
-    .unwrap();
 
     disp.flush().unwrap();
 

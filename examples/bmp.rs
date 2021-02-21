@@ -80,14 +80,14 @@ fn main() -> ! {
 
     let (w, h) = disp.dimensions();
 
-    let bmp = Bmp::from_slice(include_bytes!("./rust-pride.bmp")).unwrap();
+    let bmp = Bmp::<Rgb565>::from_slice(include_bytes!("./rust-pride.bmp")).unwrap();
 
-    let im: Image<Bmp, Rgb565> = Image::new(&bmp, Point::zero());
+    let im = Image::new(&bmp, Point::zero());
 
     // Position image in the center of the display
     let moved = im.translate(Point::new(
-        (w as u32 - bmp.width()) as i32 / 2,
-        (h as u32 - bmp.height()) as i32 / 2,
+        (w as u32 - bmp.size().width) as i32 / 2,
+        (h as u32 - bmp.size().height) as i32 / 2,
     ));
 
     moved.draw(&mut disp).unwrap();

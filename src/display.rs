@@ -356,44 +356,67 @@ where
 use core::convert::TryInto;
 #[cfg(feature = "graphics")]
 use embedded_graphics::{
-    drawable,
+    prelude::*,
     geometry::Size,
     pixelcolor::{
         raw::{RawData, RawU16},
         Rgb565,
     },
-    DrawTarget,
+    draw_target::DrawTarget,
 };
 
 #[cfg(feature = "graphics")]
-impl<SPI, DC> DrawTarget<Rgb565> for Ssd1331<SPI, DC>
+impl<SPI, DC> OriginDimensions for Ssd1331<SPI, DC>
 where
     SPI: hal::blocking::spi::Write<u8>,
     DC: OutputPin,
 {
-    type Error = core::convert::Infallible;
-
-    fn draw_pixel(&mut self, pixel: drawable::Pixel<Rgb565>) -> Result<(), Self::Error> {
-        let drawable::Pixel(pos, color) = pixel;
-
-        // Guard against negative values. All positive i32 values from `pos` can be represented in
-        // the `u32`s that `set_pixel()` accepts.
-        if pos.x < 0 || pos.y < 0 {
-            return Ok(());
-        }
-
-        self.set_pixel(
-            (pos.x).try_into().unwrap(),
-            (pos.y).try_into().unwrap(),
-            RawU16::from(color).into_inner(),
-        );
-
-        Ok(())
-    }
-
     fn size(&self) -> Size {
         let (w, h) = self.dimensions();
 
         Size::new(w as u32, h as u32)
+    }
+}
+
+#[cfg(feature = "graphics")]
+impl<SPI, DC> DrawTarget for Ssd1331<SPI, DC>
+where
+    SPI: hal::blocking::spi::Write<u8>,
+    DC: OutputPin,
+    
+{
+    type Error = core::convert::Infallible;
+    type Color = Rgb565;
+    // fn draw_pixel(&mut self, pixel: drawable::Pixel<Rgb565>) -> Result<(), Self::Error> {
+    //     let drawable::Pixel(pos, color) = pixel;
+
+    //     // Guard against negative values. All positive i32 values from `pos` can be represented in
+    //     // the `u32`s that `set_pixel()` accepts.
+    //     if pos.x < 0 || pos.y < 0 {
+    //         return Ok(());
+    //     }
+
+    //     self.set_pixel(
+    //         (pos.x).try_into().unwrap(),
+    //         (pos.y).try_into().unwrap(),
+    //         RawU16::from(color).into_inner(),
+    //     );
+
+    fn draw_iter<I>(&mut self, pixels: I) -> Result<(), Self::Error>
+    where
+            I: IntoIterator<Item = Pixel<Self::Color>>
+    {
+        for pixel in pixels.into_iter() {
+            let Pixel(pos, color) = pixel;
+            if pos.x < 0 || pos.y < 0 {
+                return Ok(());
+            }
+            self.set_pixel(
+                (pos.x).try_into().unwrap(),
+                (pos.y).try_into().unwrap(),
+                RawU16::from(color).into_inner(),
+            );
+        }   
+        Ok(())   
     }
 }
